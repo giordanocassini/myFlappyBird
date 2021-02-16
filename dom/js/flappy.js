@@ -104,6 +104,12 @@ function Progresso () {
     this.atualizarPontos(0)
 }
 
+function estaoSobrepostos (elementoA, elementoB) {
+    const a = elementoA.getBoundingClientRect()
+    const b = elementoB.getBoundingClientRect()
+
+}
+
 function FlappyBird () {
     let pontos = 0
 
