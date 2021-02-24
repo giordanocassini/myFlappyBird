@@ -62,3 +62,12 @@
     font-family: Pixel;
     font-size: 70px;
 }
+
+.start {
+    position: absolute;
+    z-index: 100;
+    top: 25%;
+    left: 40%;
+    font-family: Pixel;
+    font-size: 120px;
+}
