@@ -155,6 +155,7 @@ function FlappyBird() {
             () => progresso.atualizarPontos(++pontos));
         let passaro = new Passaro(altura);
         let progresso = new Progresso();
+        let pausa = false;
 
         barreiras.pares.forEach(par => areaDoJogo.appendChild(par.elemento));
         areaDoJogo.appendChild(passaro.elemento);
@@ -163,7 +164,7 @@ function FlappyBird() {
         const temporizador = setInterval(() => {
             barreiras.animar();
             passaro.animar();
-
+    
             if (colidiu(passaro, barreiras)) {
                 clearInterval(temporizador);
                 pontos = 0;
@@ -172,6 +173,13 @@ function FlappyBird() {
                 passaro.elemento.remove();
                 botaoStart.style.display = 'inline';
             }
+    
+            window.addEventListener('keydown', e => {
+                if (e.keyCode == 80 && !pausa) {
+                    clearInterval(temporizador);
+                    pausa = true;
+                }
+            })
         }, 20)
     }
 
