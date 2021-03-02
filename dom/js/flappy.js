@@ -161,10 +161,10 @@ function FlappyBird() {
         areaDoJogo.appendChild(passaro.elemento);
         areaDoJogo.appendChild(progresso.elemento);
 
-        const temporizador = setInterval(() => {
+        var temporizador = setInterval(() => {
             barreiras.animar();
             passaro.animar();
-    
+
             if (colidiu(passaro, barreiras)) {
                 clearInterval(temporizador);
                 pontos = 0;
@@ -173,14 +173,31 @@ function FlappyBird() {
                 passaro.elemento.remove();
                 botaoStart.style.display = 'inline';
             }
-    
-            window.addEventListener('keydown', e => {
-                if (e.keyCode == 80 && !pausa) {
-                    clearInterval(temporizador);
-                    pausa = true;
+        }, 20);
+
+        window.addEventListener('keydown', e => {
+            if (e.keyCode == 80) {
+                if (!pausa){
+                clearInterval(temporizador);
+                pausa = true;
+                } else {
+                    pausa = false;
+                    temporizador = setInterval(() => {
+                        barreiras.animar();
+                        passaro.animar();
+            
+                        if (colidiu(passaro, barreiras)) {
+                            clearInterval(temporizador);
+                            pontos = 0;
+                            progresso.elemento.remove();
+                            barreiras.remover();
+                            passaro.elemento.remove();
+                            botaoStart.style.display = 'inline';
+                        }
+                    }, 20);
                 }
-            })
-        }, 20)
+            }
+        })
     }
 
     botaoStart.onclick = start;
