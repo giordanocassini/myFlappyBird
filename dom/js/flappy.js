@@ -15,7 +15,7 @@ function Barreira(reversa = false) {
     this.setAltura = altura => corpo.style.height = `${altura}px`;
 }
 
-function ParDeBarreiras(altura, abertura, x) {
+function ParDeBarreiras(alturaDoJogo, abertura, x) {
     this.elemento = novoElemento('div', 'par-de-barreiras');
 
     this.superior = new Barreira(true);
@@ -25,8 +25,8 @@ function ParDeBarreiras(altura, abertura, x) {
     this.elemento.appendChild(this.inferior.elemento);
 
     this.sortearPosicaoAbertura = () => {
-        const alturaSuperior = Math.random() * (altura - abertura);
-        const alturaInferior = altura - abertura - alturaSuperior;
+        const alturaSuperior = Math.random() * (alturaDoJogo - abertura);
+        const alturaInferior = alturaDoJogo - abertura - alturaSuperior;
         this.superior.setAltura(alturaSuperior);
         this.inferior.setAltura(alturaInferior);
     }
@@ -40,13 +40,13 @@ function ParDeBarreiras(altura, abertura, x) {
     this.setX(x);
 }
 
-function Barreiras(altura, largura, abertura, espaco, notificarPonto) {
+function Barreiras(alturaDoJogo, larguraDoJogo, abertura, espaco, notificarPonto) {
 
     this.pares = [
-        new ParDeBarreiras(altura, abertura, largura),
-        new ParDeBarreiras(altura, abertura, largura + espaco),
-        new ParDeBarreiras(altura, abertura, largura + espaco * 2),
-        new ParDeBarreiras(altura, abertura, largura + espaco * 3)
+        new ParDeBarreiras(alturaDoJogo, abertura, larguraDoJogo),
+        new ParDeBarreiras(alturaDoJogo, abertura, larguraDoJogo + espaco),
+        new ParDeBarreiras(alturaDoJogo, abertura, larguraDoJogo + espaco * 2),
+        new ParDeBarreiras(alturaDoJogo, abertura, larguraDoJogo + espaco * 3)
     ];
 
     let deslocamento = 3;
@@ -67,7 +67,7 @@ function Barreiras(altura, largura, abertura, espaco, notificarPonto) {
                 par.sortearAbertura();
             }
 
-            const meio = largura / 2;
+            const meio = larguraDoJogo / 2;
             const cruzouOMeio = par.getX() + deslocamento >= meio
                 && par.getX() < meio;
             if (cruzouOMeio) notificarPonto();
@@ -138,22 +138,22 @@ function FlappyBird() {
     let pontos = 0;
 
     const areaDoJogo = document.querySelector('[wm-flappy]');
-    const altura = areaDoJogo.clientHeight;
-    const largura = areaDoJogo.clientWidth;
+    const alturaDoJogo = areaDoJogo.clientHeight;
+    const larguraDoJogo = areaDoJogo.clientWidth;
     const botaoStart = novoElemento('h1', 'start');
 
     botaoStart.innerHTML = "Start";
     areaDoJogo.appendChild(botaoStart);
 
-    const criaBarreiras = function (altura, largura, abertura, espaco, notificarPonto) {
-        return new Barreiras(altura, largura, abertura, espaco, notificarPonto);
+    const criaBarreiras = function (alturaDoJogo, larguraDoJogo, abertura, espaco, notificarPonto) {
+        return new Barreiras(alturaDoJogo, larguraDoJogo, abertura, espaco, notificarPonto);
     }
 
     const start = () => {
         botaoStart.style.display = 'none';
-        let barreiras = criaBarreiras(altura, largura, 200, 400,
+        let barreiras = criaBarreiras(alturaDoJogo, larguraDoJogo, 200, 400,
             () => progresso.atualizarPontos(++pontos));
-        let passaro = new Passaro(altura);
+        let passaro = new Passaro(alturaDoJogo);
         let progresso = new Progresso();
         let pausa = false;
 
