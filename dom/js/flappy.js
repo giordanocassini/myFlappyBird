@@ -13,9 +13,15 @@ function Barreira(reversa = false) {
     this.elemento.appendChild(reversa ? borda : corpo);
 
     this.setAltura = altura => corpo.style.height = `${altura}px`;
+
+    this.getX = () => parseInt(this.elemento.style.left.split('px')[0]);
+    this.setX = x => this.elemento.style.left = `${x}px`;
+
+    this.getLargura = () => this.elemento.clientWidth;
+
 }
 
-function ParDeBarreiras(alturaDoJogo, abertura, x) {
+function ParDeBarreiras(alturaDoJogo, x) {
     this.elemento = novoElemento('div', 'par-de-barreiras');
 
     this.superior = new Barreira(true);
@@ -24,7 +30,17 @@ function ParDeBarreiras(alturaDoJogo, abertura, x) {
     this.elemento.appendChild(this.superior.elemento);
     this.elemento.appendChild(this.inferior.elemento);
 
+    this.sortearAbertura = () => {
+        let abertura = Math.random() * (alturaDoJogo - 300);
+        if(abertura < 200) {
+            return 200;
+        } else {
+            return abertura; 
+        }
+    }
+
     this.sortearPosicaoAbertura = () => {
+        const abertura = this.sortearAbertura();
         const alturaSuperior = Math.random() * (alturaDoJogo - abertura);
         const alturaInferior = alturaDoJogo - abertura - alturaSuperior;
         this.superior.setAltura(alturaSuperior);
@@ -40,13 +56,13 @@ function ParDeBarreiras(alturaDoJogo, abertura, x) {
     this.setX(x);
 }
 
-function Barreiras(alturaDoJogo, larguraDoJogo, abertura, espaco, notificarPonto) {
+function Barreiras(alturaDoJogo, larguraDoJogo, espaco, notificarPonto) {
 
     this.pares = [
-        new ParDeBarreiras(alturaDoJogo, abertura, larguraDoJogo),
-        new ParDeBarreiras(alturaDoJogo, abertura, larguraDoJogo + espaco),
-        new ParDeBarreiras(alturaDoJogo, abertura, larguraDoJogo + espaco * 2),
-        new ParDeBarreiras(alturaDoJogo, abertura, larguraDoJogo + espaco * 3)
+        new ParDeBarreiras(alturaDoJogo, larguraDoJogo),
+        new ParDeBarreiras(alturaDoJogo, larguraDoJogo + espaco),
+        new ParDeBarreiras(alturaDoJogo, larguraDoJogo + espaco * 2),
+        new ParDeBarreiras(alturaDoJogo, larguraDoJogo + espaco * 3)
     ];
 
     let deslocamento = 3;
@@ -64,7 +80,7 @@ function Barreiras(alturaDoJogo, larguraDoJogo, abertura, espaco, notificarPonto
             // quando o elemento sair da área do jogo
             if (par.getX() < -par.getLargura()) {
                 par.setX(par.getX() + espaco * this.pares.length);
-                par.sortearAbertura();
+                par.sortearPosicaoAbertura();
             }
 
             const meio = larguraDoJogo / 2;
@@ -110,6 +126,10 @@ function Progresso() {
     this.atualizarPontos(0);
 }
 
+// function sortearTipoBarreira() {
+
+// }
+
 function estaoSobrepostos(elementoA, elementoB) {
     const a = elementoA.getBoundingClientRect();
     const b = elementoB.getBoundingClientRect();
@@ -145,13 +165,13 @@ function FlappyBird() {
     botaoStart.innerHTML = "Start";
     areaDoJogo.appendChild(botaoStart);
 
-    const criaBarreiras = function (alturaDoJogo, larguraDoJogo, abertura, espaco, notificarPonto) {
-        return new Barreiras(alturaDoJogo, larguraDoJogo, abertura, espaco, notificarPonto);
+    const criaBarreiras = function (alturaDoJogo, larguraDoJogo, espaco, notificarPonto) {
+        return new Barreiras(alturaDoJogo, larguraDoJogo, espaco, notificarPonto);
     }
 
     const start = () => {
         botaoStart.style.display = 'none';
-        let barreiras = criaBarreiras(alturaDoJogo, larguraDoJogo, 200, 400,
+        let barreiras = criaBarreiras(alturaDoJogo, larguraDoJogo, 400,
             () => progresso.atualizarPontos(++pontos));
         let passaro = new Passaro(alturaDoJogo);
         let progresso = new Progresso();
